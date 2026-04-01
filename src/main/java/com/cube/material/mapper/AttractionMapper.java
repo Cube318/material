@@ -117,7 +117,7 @@ public interface AttractionMapper extends BaseMapper<Attraction> {
                 a.name LIKE CONCAT('%', #{name}, '%')
             </if>
         </where>
-        ORDER BY a.id DESC
+        ORDER BY a.id ASC
         </script>
         """)
     @Results({
