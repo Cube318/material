@@ -7,6 +7,9 @@ import com.cube.material.service.AttractionService;
 import com.cube.material.vo.AttractionDetailVO;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author 17815
+ */
 @Service
 public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attraction>
         implements AttractionService {
