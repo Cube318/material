@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cube.material.common.RetInfo;
 import com.cube.material.entity.Attraction;
 import com.cube.material.service.AttractionService;
+import com.cube.material.vo.AttractionDetailVO;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -48,7 +49,18 @@ public class AttractionController {
      */
     @GetMapping("/{id}")
     public RetInfo<?> detail(@PathVariable Long id) {
-        return RetInfo.ok(attractionService.getById(id));
+        System.out.println("========== [Controller] 请求景点详情，id = " + id + " ==========");
+
+        AttractionDetailVO detailVO = attractionService.detail(id);
+
+        // 适配嵌套结构后的打印
+        String poiObjectId = (detailVO.getPoi() != null && detailVO.getPoi().getObjectId() != null)
+                ? detailVO.getPoi().getObjectId()
+                : "NULL";
+
+        System.out.println("========== [Controller] 返回数据完成，poi.objectId = " + poiObjectId + " ==========");
+
+        return RetInfo.ok(detailVO);
     }
 
     /**
