@@ -2,6 +2,9 @@ package com.cube.material.common;
 
 import lombok.Data;
 
+/**
+ * @author cube
+ */
 @Data
 public class RetInfo<T> {
 

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 
+/**
+ * @author cube
+ */
 @RestController
 @RequestMapping("/attraction")
 public class AttractionController {

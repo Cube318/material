@@ -1,11 +1,8 @@
 package com.cube.material.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cube.material.entity.Attraction;
 import com.cube.material.vo.AttractionDetailVO;
-import com.cube.material.vo.AttractionListVO;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;

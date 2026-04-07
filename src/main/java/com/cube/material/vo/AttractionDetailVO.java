@@ -3,6 +3,9 @@ package com.cube.material.vo;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/**
+ * @author cube
+ */
 @Data
 public class AttractionDetailVO {
 
