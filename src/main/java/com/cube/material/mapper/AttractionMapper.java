@@ -3,9 +3,13 @@ package com.cube.material.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cube.material.entity.Attraction;
 import com.cube.material.vo.AttractionDetailVO;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
 /**
  * @author cube
  */
@@ -17,44 +21,78 @@ public interface AttractionMapper extends BaseMapper<Attraction> {
 
 
     @Select("""
-    SELECT 
-        a.*,
-        p.objectId,
-        p.name              AS poi_name,
-        p.address           AS poi_address,
-        p.longitude         AS poi_longitude,
-        p.latitude          AS poi_latitude,
-        p.tel               AS poi_tel,
-        p.businessHours     AS poi_businessHours,
-        p.categoryType      AS poi_categoryType,
-        p.poiType           AS poi_poiType,
-        p.description       AS poi_description,
-        p.status            AS poi_status,
-        p.rating            AS poi_rating,
-        p.reviewNum         AS poi_reviewNum,
-        p.favorite          AS poi_favorite
-    FROM t_attraction a
-    LEFT JOIN t_poi_base p ON a.poiObjId = p.objectId
-    WHERE a.id = #{id}
-    """)
+            SELECT 
+                a.*,
+                p.objectId,
+                p.name              AS poi_name,
+                p.address           AS poi_address,
+                p.longitude         AS poi_longitude,
+                p.latitude          AS poi_latitude,
+                p.tel               AS poi_tel,
+                p.businessHours     AS poi_businessHours,
+                p.categoryType      AS poi_categoryType,
+                p.poiType           AS poi_poiType,
+                p.description       AS poi_description,
+                p.status            AS poi_status,
+                p.rating            AS poi_rating,
+                p.reviewNum         AS poi_reviewNum,
+                p.favorite          AS poi_favorite
+            FROM t_attraction a
+            LEFT JOIN t_poi_base p ON a.poiObjId = p.objectId
+            WHERE a.id = #{id}
+            """)
     @Results({
-            @Result(property = "poi.objectId",       column = "objectId"),
-            @Result(property = "poi.name",           column = "poi_name"),
-            @Result(property = "poi.address",        column = "poi_address"),
-            @Result(property = "poi.longitude",      column = "poi_longitude"),
-            @Result(property = "poi.latitude",       column = "poi_latitude"),
-            @Result(property = "poi.tel",            column = "poi_tel"),
-            @Result(property = "poi.businessHours",  column = "poi_businessHours"),
-            @Result(property = "poi.categoryType",   column = "poi_categoryType"),
-            @Result(property = "poi.poiType",        column = "poi_poiType"),
-            @Result(property = "poi.description",    column = "poi_description"),
-            @Result(property = "poi.status",         column = "poi_status"),
-            @Result(property = "poi.rating",         column = "poi_rating"),
-            @Result(property = "poi.reviewNum",      column = "poi_reviewNum"),
-            @Result(property = "poi.favorite",       column = "poi_favorite")
+            @Result(property = "poi.objectId", column = "objectId"),
+            @Result(property = "poi.name", column = "poi_name"),
+            @Result(property = "poi.address", column = "poi_address"),
+            @Result(property = "poi.longitude", column = "poi_longitude"),
+            @Result(property = "poi.latitude", column = "poi_latitude"),
+            @Result(property = "poi.tel", column = "poi_tel"),
+            @Result(property = "poi.businessHours", column = "poi_businessHours"),
+            @Result(property = "poi.categoryType", column = "poi_categoryType"),
+            @Result(property = "poi.poiType", column = "poi_poiType"),
+            @Result(property = "poi.description", column = "poi_description"),
+            @Result(property = "poi.status", column = "poi_status"),
+            @Result(property = "poi.rating", column = "poi_rating"),
+            @Result(property = "poi.reviewNum", column = "poi_reviewNum"),
+            @Result(property = "poi.favorite", column = "poi_favorite")
     })
+    // 视频列表映射（嵌套查询）
+    @Result(property = "videos", column = "id",                    // 当前景点的 id 传递给子查询
+            javaType = java.util.List.class, many = @Many(select = "getVideosByAttractionId"))
     AttractionDetailVO getDetailWithPoi(Long id);
 
+    /**
+     * 根据景点ID查询关联视频（userId = 景点id）
+     */
+    @Select("""
+            SELECT 
+                id,
+                title,
+                description,
+                orientationType,
+                thumbnailUrl,
+                themeColor,
+                videoUrl,
+                createDate,
+                flag
+            FROM t_videos 
+            WHERE userId = #{attractionId}
+              AND flag = '1'                    -- 只返回已发布的视频，根据业务可调整
+            ORDER BY id ASC
+            """)
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "title", column = "title"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "orientationType", column = "orientationType"),
+            @Result(property = "thumbnailUrl", column = "thumbnailUrl"),
+            @Result(property = "themeColor", column = "themeColor"),
+            @Result(property = "videoUrl", column = "videoUrl"),
+            @Result(property = "createDate", column = "createDate"),
+            @Result(property = "flag", column = "flag")
+    })
+    List<AttractionDetailVO.VideoVO> getVideosByAttractionId(Long attractionId);
 
 //    /**
 //     * 分页查询景点列表 + POI 基础信息

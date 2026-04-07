@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 
+import java.util.List;
+
 /**
  * @author cube
  */
@@ -56,12 +58,15 @@ public class AttractionController {
 
         AttractionDetailVO detailVO = attractionService.detail(id);
 
-        // 适配嵌套结构后的打印
-        String poiObjectId = (detailVO.getPoi() != null && detailVO.getPoi().getObjectId() != null)
-                ? detailVO.getPoi().getObjectId()
-                : "NULL";
+        if (detailVO == null) {
+            return RetInfo.error("景点不存在");
+        }
 
-        System.out.println("========== [Controller] 返回数据完成，poi.objectId = " + poiObjectId + " ==========");
+        List<AttractionDetailVO.VideoVO> videos = detailVO.getVideos();
+
+        System.out.println("========== [Controller] 查询完成，poi.objectId = "
+                + (detailVO.getPoi() != null ? detailVO.getPoi().getObjectId() : "NULL")
+                + "，视频数量 = " + (videos != null ? videos.size() : 0) + " ==========");
 
         return RetInfo.ok(detailVO);
     }

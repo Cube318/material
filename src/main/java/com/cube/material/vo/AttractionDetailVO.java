@@ -2,6 +2,7 @@ package com.cube.material.vo;
 
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author cube
@@ -48,8 +49,11 @@ public class AttractionDetailVO {
     private LocalDateTime updateTime;
     private String info;
 
-    // ==================== POI 信息（嵌套对象，更清晰） ====================
+    // ==================== POI 信息（嵌套对象） ====================
     private PoiInfoVO poi;
+
+    // ==================== 新增：该景点关联的视频列表 ====================
+    private List<VideoVO> videos;
 
     @Data
     public static class PoiInfoVO {
@@ -67,5 +71,19 @@ public class AttractionDetailVO {
         private Double rating;
         private Integer reviewNum;
         private Integer favorite;
+    }
+
+    // ==================== 视频 VO（推荐单独定义，便于维护） ====================
+    @Data
+    public static class VideoVO {
+        private Integer id;
+        private String title;
+        private String description;
+        private Integer orientationType;     // 1-横屏 2-竖屏
+        private String thumbnailUrl;         // 视频起播图
+        private String themeColor;
+        private String videoUrl;             // 视频链接
+        private LocalDateTime createDate;    // 视频发布时间
+        private String flag;                 // 审核状态
     }
 }
