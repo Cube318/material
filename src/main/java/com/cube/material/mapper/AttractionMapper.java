@@ -3,10 +3,7 @@ package com.cube.material.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cube.material.entity.Attraction;
 import com.cube.material.vo.AttractionDetailVO;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -14,12 +11,10 @@ import java.util.List;
  * @author cube
  */
 public interface AttractionMapper extends BaseMapper<Attraction> {
-    // 可以自定义额外方法
+
     /**
-     * 查询景点详情 + POI 基础信息
+     * 查询景点详情 + POI + 关联视频列表
      */
-
-
     @Select("""
             SELECT 
                 a.*,
@@ -42,55 +37,116 @@ public interface AttractionMapper extends BaseMapper<Attraction> {
             WHERE a.id = #{id}
             """)
     @Results({
-            @Result(property = "poi.objectId", column = "objectId"),
-            @Result(property = "poi.name", column = "poi_name"),
-            @Result(property = "poi.address", column = "poi_address"),
-            @Result(property = "poi.longitude", column = "poi_longitude"),
-            @Result(property = "poi.latitude", column = "poi_latitude"),
-            @Result(property = "poi.tel", column = "poi_tel"),
-            @Result(property = "poi.businessHours", column = "poi_businessHours"),
-            @Result(property = "poi.categoryType", column = "poi_categoryType"),
-            @Result(property = "poi.poiType", column = "poi_poiType"),
-            @Result(property = "poi.description", column = "poi_description"),
-            @Result(property = "poi.status", column = "poi_status"),
-            @Result(property = "poi.rating", column = "poi_rating"),
-            @Result(property = "poi.reviewNum", column = "poi_reviewNum"),
-            @Result(property = "poi.favorite", column = "poi_favorite")
+            // ==================== t_attraction 主表字段映射（必须加上！） ====================
+            @Result(property = "id",              column = "id"),
+            @Result(property = "poiObjId",        column = "poiObjId"),
+            @Result(property = "name",            column = "name"),
+            @Result(property = "title",           column = "title"),
+            @Result(property = "scenicRating",    column = "scenicRating"),
+            @Result(property = "grade",           column = "grade"),
+            @Result(property = "recPriority",     column = "recPriority"),
+            @Result(property = "valueDesc",       column = "valueDesc"),
+            @Result(property = "locationArea",    column = "locationArea"),
+            @Result(property = "advantage",       column = "advantage"),
+            @Result(property = "reviewNum",       column = "reviewNum"),
+            @Result(property = "favorite",        column = "favorite"),
+            @Result(property = "rating",          column = "rating"),
+            @Result(property = "description",     column = "description"),
+            @Result(property = "openTime",        column = "openTime"),
+            @Result(property = "closeTime",       column = "closeTime"),
+            @Result(property = "lastEntryTime",   column = "lastEntryTime"),
+            @Result(property = "address",         column = "address"),
+            @Result(property = "imageUrl",        column = "imageUrl"),
+            @Result(property = "guideMapUrl",     column = "guideMapUrl"),
+            @Result(property = "guideMapFlag",    column = "guideMapFlag"),
+            @Result(property = "routeIconUrl",    column = "routeIconUrl"),
+            @Result(property = "summaryVideoUrl", column = "summaryVideoUrl"),
+            @Result(property = "ticketPrice",     column = "ticketPrice"),
+            @Result(property = "introduce",       column = "introduce"),
+            @Result(property = "introduceAudio",  column = "introduceAudio"),
+            @Result(property = "explanation",     column = "explanation"),
+            @Result(property = "explanationUrl",  column = "explanationUrl"),
+            @Result(property = "featuresType",    column = "featuresType"),
+            @Result(property = "attractionType",  column = "attractionType"),
+            @Result(property = "scale",           column = "scale"),
+            @Result(property = "serviceType",     column = "serviceType"),
+            @Result(property = "createBy",        column = "createBy"),
+            @Result(property = "createTime",      column = "createTime"),
+            @Result(property = "updateBy",        column = "updateBy"),
+            @Result(property = "updateTime",      column = "updateTime"),
+            @Result(property = "info",            column = "info"),
+
+            // ==================== POI 信息映射 ====================
+            @Result(property = "poi.objectId",       column = "objectId"),
+            @Result(property = "poi.name",           column = "poi_name"),
+            @Result(property = "poi.address",        column = "poi_address"),
+            @Result(property = "poi.longitude",      column = "poi_longitude"),
+            @Result(property = "poi.latitude",       column = "poi_latitude"),
+            @Result(property = "poi.tel",            column = "poi_tel"),
+            @Result(property = "poi.businessHours",  column = "poi_businessHours"),
+            @Result(property = "poi.categoryType",   column = "poi_categoryType"),
+            @Result(property = "poi.poiType",        column = "poi_poiType"),
+            @Result(property = "poi.description",    column = "poi_description"),
+            @Result(property = "poi.status",         column = "poi_status"),
+            @Result(property = "poi.rating",         column = "poi_rating"),
+            @Result(property = "poi.reviewNum",      column = "poi_reviewNum"),
+            @Result(property = "poi.favorite",       column = "poi_favorite"),
+
+            // ==================== 视频列表映射（嵌套查询） ====================
+            @Result(property = "videos",
+                    column = "id",                                   // 把景点id传给子查询
+                    javaType = List.class,
+                    many = @Many(select = "getVideosByAttractionId"))
     })
-    // 视频列表映射（嵌套查询）
-    @Result(property = "videos", column = "id",                    // 当前景点的 id 传递给子查询
-            javaType = java.util.List.class, many = @Many(select = "getVideosByAttractionId"))
     AttractionDetailVO getDetailWithPoi(Long id);
 
+
+    /**
+     * 根据景点ID查询关联视频
+     */
     /**
      * 根据景点ID查询关联视频（userId = 景点id）
      */
     @Select("""
-            SELECT 
-                id,
-                title,
-                description,
-                orientationType,
-                thumbnailUrl,
-                themeColor,
-                videoUrl,
-                createDate,
-                flag
-            FROM t_videos 
-            WHERE userId = #{attractionId}
-              AND flag = '1'                    -- 只返回已发布的视频，根据业务可调整
-            ORDER BY id ASC
-            """)
+        SELECT 
+            id,
+            userId,
+            title,
+            description,
+            orientationType,
+            thumbnailUrl,
+            themeColor,
+            videoUrl,
+            createDate,
+            updateDate,
+            flag,
+            createBy,
+            createTime,
+            updateBy,
+            updateTime,
+            info
+        FROM t_videos 
+        WHERE userId = #{attractionId}
+          AND flag = '1'
+        ORDER BY id ASC
+        """)
     @Results({
-            @Result(property = "id", column = "id"),
-            @Result(property = "title", column = "title"),
-            @Result(property = "description", column = "description"),
-            @Result(property = "orientationType", column = "orientationType"),
-            @Result(property = "thumbnailUrl", column = "thumbnailUrl"),
-            @Result(property = "themeColor", column = "themeColor"),
-            @Result(property = "videoUrl", column = "videoUrl"),
-            @Result(property = "createDate", column = "createDate"),
-            @Result(property = "flag", column = "flag")
+            @Result(property = "id",               column = "id"),
+            @Result(property = "userId",           column = "userId"),
+            @Result(property = "title",            column = "title"),
+            @Result(property = "description",      column = "description"),
+            @Result(property = "orientationType",  column = "orientationType"),
+            @Result(property = "thumbnailUrl",     column = "thumbnailUrl"),
+            @Result(property = "themeColor",       column = "themeColor"),
+            @Result(property = "videoUrl",         column = "videoUrl"),
+            @Result(property = "createDate",       column = "createDate"),
+            @Result(property = "updateDate",       column = "updateDate"),
+            @Result(property = "flag",             column = "flag"),
+            @Result(property = "createBy",         column = "createBy"),
+            @Result(property = "createTime",       column = "createTime"),
+            @Result(property = "updateBy",         column = "updateBy"),
+            @Result(property = "updateTime",       column = "updateTime"),
+            @Result(property = "info",             column = "info")
     })
     List<AttractionDetailVO.VideoVO> getVideosByAttractionId(Long attractionId);
 

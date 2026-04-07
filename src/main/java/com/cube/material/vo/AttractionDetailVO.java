@@ -77,13 +77,31 @@ public class AttractionDetailVO {
     @Data
     public static class VideoVO {
         private Integer id;
+        private Integer userId;
         private String title;
         private String description;
-        private Integer orientationType;     // 1-横屏 2-竖屏
-        private String thumbnailUrl;         // 视频起播图
+        private Integer orientationType;
+        private String thumbnailUrl;
         private String themeColor;
-        private String videoUrl;             // 视频链接
-        private LocalDateTime createDate;    // 视频发布时间
-        private String flag;                 // 审核状态
+        private String videoUrl;
+        private LocalDateTime createDate;
+        private LocalDateTime updateDate;
+        private String flag;
+        private String createBy;
+        private LocalDateTime createTime;
+        private String updateBy;
+        private LocalDateTime updateTime;
+        private String info;
+
+        // 如果你只想返回核心字段，也可以只保留下面这些，删除上面多余的
+        // private Integer id;
+        // private String title;
+        // private String description;
+        // private Integer orientationType;
+        // private String thumbnailUrl;
+        // private String themeColor;
+        // private String videoUrl;
+        // private LocalDateTime createDate;
+        // private String flag;
     }
 }
