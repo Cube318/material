@@ -41,24 +41,24 @@ public class AttractionListVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
-    // ==================== POI 信息（嵌套对象） ====================
-    private PoiInfoVO poi;
-
-    @Data
-    public static class PoiInfoVO {
-        private String objectId;
-        private String name;
-        private String address;
-        private Double longitude;
-        private Double latitude;
-        private String tel;
-        private String businessHours;
-        private Integer categoryType;
-        private Integer poiType;
-        private String description;
-        private Integer status;
-        private Double rating;
-        private Integer reviewNum;
-        private Integer favorite;
-    }
+//     ==================== POI 信息（嵌套对象） ====================
+//    private PoiInfoVO poi;
+//
+//    @Data
+//    public static class PoiInfoVO {
+//        private String objectId;
+//        private String name;
+//        private String address;
+//        private Double longitude;
+//        private Double latitude;
+//        private String tel;
+//        private String businessHours;
+//        private Integer categoryType;
+//        private Integer poiType;
+//        private String description;
+//        private Integer status;
+//        private Double rating;
+//        private Integer reviewNum;
+//        private Integer favorite;
+//    }
 }

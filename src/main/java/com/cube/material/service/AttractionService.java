@@ -12,5 +12,5 @@ import com.cube.material.vo.AttractionListVO;
 public interface AttractionService extends IService<Attraction> {
     AttractionDetailVO detail(Long id);
 
-    Page<AttractionListVO> pageWithPoi(Integer page, Integer size, String name);
+//    Page<AttractionListVO> pageWithPoi(Integer page, Integer size, String name);
 }

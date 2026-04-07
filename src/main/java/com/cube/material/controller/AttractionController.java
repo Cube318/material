@@ -72,9 +72,14 @@ public class AttractionController {
             @RequestParam(defaultValue = "10") Integer size,
             String name
     ) {
-        System.out.println("====== 接口被访问了 ======");
-        System.out.println("page=" + page + ", size=" + size + ", name=" + name);
 
-        return RetInfo.ok(attractionService.pageWithPoi(page, size, name));
+        Page<Attraction> p = new Page<>(page, size);
+
+        QueryWrapper<Attraction> qw = new QueryWrapper<>();
+        if (name != null && !name.isEmpty()) {
+            qw.like("name", name);
+        }
+
+        return RetInfo.ok(attractionService.page(p, qw));
     }
 }

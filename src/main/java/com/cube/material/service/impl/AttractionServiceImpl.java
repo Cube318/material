@@ -34,12 +34,12 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     }
 
 
-    /**
-     * 分页查询景点列表（包含 POI 信息）
-     */
-    @Override
-    public Page<AttractionListVO> pageWithPoi(Integer page, Integer size, String name) {
-        Page<AttractionListVO> pageParam = new Page<>(page, size);
-        return baseMapper.pageWithPoi(pageParam, name);
-    }
+//    /**
+//     * 分页查询景点列表（包含 POI 信息）
+//     */
+//    @Override
+//    public Page<AttractionListVO> pageWithPoi(Integer page, Integer size, String name) {
+//        Page<AttractionListVO> pageParam = new Page<>(page, size);
+//        return baseMapper.pageWithPoi(pageParam, name);
+//    }
 }
