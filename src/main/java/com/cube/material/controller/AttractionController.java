@@ -6,6 +6,7 @@ import com.cube.material.common.RetInfo;
 import com.cube.material.entity.Attraction;
 import com.cube.material.service.AttractionService;
 import com.cube.material.vo.AttractionDetailVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * @author cube
  */
+@Slf4j
 @RestController
 @RequestMapping("/attraction")
 public class AttractionController {
@@ -54,7 +56,7 @@ public class AttractionController {
      */
     @GetMapping("/{id}")
     public RetInfo<?> detail(@PathVariable Long id) {
-        System.out.println("========== [Controller] 请求景点详情，id = " + id + " ==========");
+        log.info("========== [Controller] 请求景点详情，id = " + id + " ==========");
 
         AttractionDetailVO detailVO = attractionService.detail(id);
 
