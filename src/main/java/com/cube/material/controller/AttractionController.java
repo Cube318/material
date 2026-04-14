@@ -80,7 +80,8 @@ public class AttractionController {
     public RetInfo<?> page(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
-            String name
+            String name,
+            String grade
     ) {
 
         Page<Attraction> p = new Page<>(page, size);
@@ -90,6 +91,9 @@ public class AttractionController {
             qw.like("name", name);
         }
 
+        if (grade != null && !grade.isEmpty()) {
+            qw.eq("grade", grade);
+        }
         return RetInfo.ok(attractionService.page(p, qw));
     }
 }
