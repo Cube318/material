@@ -27,7 +27,7 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
             return null;
         }
 
-        String poiObjectId = (vo != null && vo.getPoi() != null && vo.getPoi().getObjectId() != null) ? vo.getPoi().getObjectId() : "NULL";
+        String poiObjectId = (vo.getPoi() != null && vo.getPoi().getObjectId() != null) ? vo.getPoi().getObjectId() : "NULL";
 
         log.info("========== [Service] 查询完成，poiObjectId = {} ==========", poiObjectId);
         return vo;

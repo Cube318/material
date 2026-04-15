@@ -102,10 +102,8 @@ public interface AttractionMapper extends BaseMapper<Attraction> {
 
 
     /**
-     * 根据景点ID查询关联视频
-     */
-    /**
-     * 根据景点ID查询关联视频（userId = 景点id）
+     * 根据景点ID查询关联视频。
+     * 说明：t_videos.userId 为历史字段名，当前业务语义为 attractionId（景点ID）。
      */
     @Select("""
         SELECT 

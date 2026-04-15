@@ -28,8 +28,12 @@ public class RetInfo<T> {
     }
 
     public static <T> RetInfo<T> error(String msg) {
+        return error(500, msg);
+    }
+
+    public static <T> RetInfo<T> error(int code, String msg) {
         RetInfo<T> r = new RetInfo<>();
-        r.setCode(500);
+        r.setCode(code);
         r.setMsg(msg);
         return r;
     }
