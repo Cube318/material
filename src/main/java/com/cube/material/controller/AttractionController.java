@@ -29,8 +29,8 @@ public class AttractionController {
      */
     @PostMapping
     public RetInfo<?> add(@RequestBody Attraction attraction) {
-        attractionService.save(attraction);
-        return RetInfo.ok();
+        boolean saved = attractionService.save(attraction);
+        return saved ? RetInfo.ok() : RetInfo.error("新增失败");
     }
 
     /**
@@ -38,8 +38,8 @@ public class AttractionController {
      */
     @DeleteMapping("/{id}")
     public RetInfo<?> delete(@PathVariable Long id) {
-        attractionService.removeById(id);
-        return RetInfo.ok();
+        boolean removed = attractionService.removeById(id);
+        return removed ? RetInfo.ok() : RetInfo.error("删除失败或数据不存在");
     }
 
     /**
@@ -47,8 +47,8 @@ public class AttractionController {
      */
     @PutMapping
     public RetInfo<?> update(@RequestBody Attraction attraction) {
-        attractionService.updateById(attraction);
-        return RetInfo.ok();
+        boolean updated = attractionService.updateById(attraction);
+        return updated ? RetInfo.ok() : RetInfo.error("修改失败或数据不存在");
     }
 
     /**
@@ -66,7 +66,7 @@ public class AttractionController {
 
         List<AttractionDetailVO.VideoVO> videos = detailVO.getVideos();
 
-        System.out.println("========== [Controller] 查询完成，poi.objectId = "
+        log.info("========== [Controller] 查询完成，poi.objectId = "
                 + (detailVO.getPoi() != null ? detailVO.getPoi().getObjectId() : "NULL")
                 + "，视频数量 = " + (videos != null ? videos.size() : 0) + " ==========");
 
@@ -81,8 +81,14 @@ public class AttractionController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             String name,
-            String grade
+            Integer grade
     ) {
+        if (page == null || page < 1) {
+            return RetInfo.error("页码必须大于等于 1");
+        }
+        if (size == null || size < 1 || size > 100) {
+            return RetInfo.error("每页数量必须在 1 到 100 之间");
+        }
 
         Page<Attraction> p = new Page<>(page, size);
 
@@ -91,9 +97,10 @@ public class AttractionController {
             qw.like("name", name);
         }
 
-        if (grade != null && !grade.isEmpty()) {
+        if (grade != null) {
             qw.eq("grade", grade);
         }
+
         return RetInfo.ok(attractionService.page(p, qw));
     }
 }

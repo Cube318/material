@@ -22,13 +22,14 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
 
         AttractionDetailVO vo = baseMapper.getDetailWithPoi(id);
 
+        if (vo == null) {
+            log.warn("========== [Service] 查询结果为空，id = {} ==========", id);
+            return null;
+        }
+
         String poiObjectId = (vo != null && vo.getPoi() != null && vo.getPoi().getObjectId() != null) ? vo.getPoi().getObjectId() : "NULL";
 
         log.info("========== [Service] 查询完成，poiObjectId = {} ==========", poiObjectId);
-
-        if (vo == null) {
-            throw new RuntimeException("景点不存在");
-        }
         return vo;
     }
 
