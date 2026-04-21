@@ -90,23 +90,11 @@ public class AttractionController {
      * 分页查询
      */
     @GetMapping("/page")
-    public RetInfo<?> page(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "页码必须大于等于 1") Integer page,
-            @RequestParam(defaultValue = "10") @Min(value = 1, message = "每页数量必须大于等于 1") @Max(value = 100, message = "每页数量必须小于等于 100") Integer size,
-            String name,
-            Integer grade
-    ) {
-        Page<Attraction> p = new Page<>(page, size);
+    public RetInfo<Page<Attraction>>  page(@RequestParam(defaultValue = "1") @Min(value = 1, message = "页码必须大于等于 1") Integer page,
+                           @RequestParam(defaultValue = "10") @Min(value = 1, message = "每页数量必须大于等于 1") @Max(value = 100, message = "每页数量必须小于等于 100") Integer size,
+                           String name,
+                           Integer grade) {
 
-        QueryWrapper<Attraction> qw = new QueryWrapper<>();
-        if (StringUtils.hasText(name)) {
-            qw.like("name", name);
-        }
-
-        if (grade != null) {
-            qw.eq("grade", grade);
-        }
-
-        return RetInfo.ok(attractionService.page(p, qw));
+        return RetInfo.ok(attractionService.attractionCardList(page, size, name, grade));
     }
 }
