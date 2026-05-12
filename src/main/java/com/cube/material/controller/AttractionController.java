@@ -1,6 +1,5 @@
 package com.cube.material.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cube.material.common.RetInfo;
 import com.cube.material.dto.AttractionCreateReq;
@@ -8,12 +7,12 @@ import com.cube.material.dto.AttractionUpdateReq;
 import com.cube.material.entity.Attraction;
 import com.cube.material.service.AttractionService;
 import com.cube.material.vo.AttractionDetailVO;
+import com.cube.material.vo.AttractionVideoVO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,5 +95,10 @@ public class AttractionController {
                            Integer grade) {
 
         return RetInfo.ok(attractionService.attractionCardList(page, size, name, grade));
+    }
+
+    @GetMapping("/getAllSecondaryAttractions")
+    public RetInfo<List<AttractionVideoVO>> getAllSecondaryAttractions() {
+        return RetInfo.ok(attractionService.getAllSecondaryAttractions());
     }
 }

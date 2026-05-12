@@ -3,6 +3,7 @@ package com.cube.material.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cube.material.entity.Attraction;
 import com.cube.material.vo.AttractionDetailVO;
+import com.cube.material.vo.AttractionVideoVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -147,6 +148,33 @@ public interface AttractionMapper extends BaseMapper<Attraction> {
             @Result(property = "info",             column = "info")
     })
     List<AttractionDetailVO.VideoVO> getVideosByAttractionId(Long attractionId);
+
+    /**
+     * 查询所有二级景点及其关联视频（LEFT JOIN）
+     */
+    @Select("""
+            SELECT
+                a.id         AS attractionId,
+                a.name,
+                a.title,
+                v.id         AS videoId,
+                v.title      AS videoTitle,
+                v.thumbnailUrl,
+                v.videoUrl
+            FROM t_attraction a
+            LEFT JOIN t_videos v ON v.userId = a.id
+            WHERE a.grade = 2
+            """)
+    @Results({
+            @Result(property = "attractionId",  column = "attractionId"),
+            @Result(property = "name",          column = "name"),
+            @Result(property = "title",         column = "title"),
+            @Result(property = "videoId",       column = "videoId"),
+            @Result(property = "videoTitle",    column = "videoTitle"),
+            @Result(property = "thumbnailUrl",  column = "thumbnailUrl"),
+            @Result(property = "videoUrl",      column = "videoUrl")
+    })
+    List<AttractionVideoVO> getSecondaryAttractionsWithVideos();
 
 //    /**
 //     * 分页查询景点列表 + POI 基础信息

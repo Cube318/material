@@ -7,9 +7,13 @@ import com.cube.material.entity.Attraction;
 import com.cube.material.mapper.AttractionMapper;
 import com.cube.material.service.AttractionService;
 import com.cube.material.vo.AttractionDetailVO;
+import com.cube.material.vo.AttractionVideoVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * @author 17815
@@ -18,6 +22,8 @@ import org.springframework.util.StringUtils;
 @Service
 public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attraction> implements AttractionService {
 
+    @Autowired
+    private AttractionMapper attractionMapper;
 
     @Override
     public AttractionDetailVO detail(Long id) {
@@ -49,6 +55,11 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         this.page(p, qw);
 
         return p;
+    }
+
+    @Override
+    public List<AttractionVideoVO> getAllSecondaryAttractions() {
+        return attractionMapper.getSecondaryAttractionsWithVideos();
     }
 
 //    /**
