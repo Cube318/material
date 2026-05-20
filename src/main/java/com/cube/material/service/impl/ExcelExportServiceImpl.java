@@ -10,6 +10,7 @@ import com.cube.material.dto.ExportReq;
 import com.cube.material.enums.ExportFieldEnum;
 import com.cube.material.enums.ExportTableEnum;
 import com.cube.material.enums.ExportTemplateEnum;
+import com.cube.material.handler.CustomColumnWidthStyleStrategy;
 import com.cube.material.service.ExcelExportService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Excel导出Service实现类
  * 
- * @author Claude
+ * @author cube
  * @date 2026-05-18
  */
 @Slf4j
@@ -92,10 +92,14 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         // 配置Excel样式
         HorizontalCellStyleStrategy styleStrategy = createCellStyleStrategy();
         
+        // 配置列宽自适应策略
+        CustomColumnWidthStyleStrategy columnWidthStyleStrategy = new CustomColumnWidthStyleStrategy();
+        
         // 使用EasyExcel流式写入
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
                 .head(headers)
                 .registerWriteHandler(styleStrategy)
+                .registerWriteHandler(columnWidthStyleStrategy)
                 .build()) {
             
             WriteSheet writeSheet = EasyExcel.writerSheet("数据").build();
@@ -302,16 +306,17 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         headWriteCellStyle.setBorderBottom(BorderStyle.THIN);
         headWriteCellStyle.setBorderLeft(BorderStyle.THIN);
         headWriteCellStyle.setBorderRight(BorderStyle.THIN);
+        headWriteCellStyle.setWrapped(true); // 表头也支持自动换行
         
         // 内容样式
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
         contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        contentWriteCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        contentWriteCellStyle.setVerticalAlignment(VerticalAlignment.TOP); // 改为顶部对齐，适合多行文本
         contentWriteCellStyle.setBorderTop(BorderStyle.THIN);
         contentWriteCellStyle.setBorderBottom(BorderStyle.THIN);
         contentWriteCellStyle.setBorderLeft(BorderStyle.THIN);
         contentWriteCellStyle.setBorderRight(BorderStyle.THIN);
-        contentWriteCellStyle.setWrapped(true);
+        contentWriteCellStyle.setWrapped(true); // 启用自动换行，超长文本会自动换行显示
         
         return new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
     }
@@ -360,10 +365,14 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         // 配置Excel样式
         HorizontalCellStyleStrategy styleStrategy = createCellStyleStrategy();
         
+        // 配置列宽自适应策略
+        CustomColumnWidthStyleStrategy columnWidthStyleStrategy = new CustomColumnWidthStyleStrategy();
+        
         // 使用EasyExcel流式写入
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
                 .head(headers)
                 .registerWriteHandler(styleStrategy)
+                .registerWriteHandler(columnWidthStyleStrategy)
                 .build()) {
             
             WriteSheet writeSheet = EasyExcel.writerSheet("数据").build();

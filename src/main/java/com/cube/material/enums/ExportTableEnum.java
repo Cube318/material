@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * 导出表枚举
  * 
- * @author Claude
+ * @author cube
  * @date 2026-05-18
  */
 @Getter

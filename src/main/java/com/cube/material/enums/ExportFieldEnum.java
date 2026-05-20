@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * 导出字段枚举 - 字段白名单及中文映射
  * 
- * @author Claude
+ * @author cube
  * @date 2026-05-18
  */
 @Getter

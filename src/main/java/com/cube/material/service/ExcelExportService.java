@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Excel导出Service接口
  * 
- * @author Claude
+ * @author cube
  * @date 2026-05-18
  */
 public interface ExcelExportService {

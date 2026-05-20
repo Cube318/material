@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 导出模板枚举（SQL写死在代码中）
  * 
- * @author Claude
+ * @author cube
  * @date 2026-05-18
  */
 @Getter
