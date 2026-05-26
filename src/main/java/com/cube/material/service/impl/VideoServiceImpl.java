@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cube.material.common.OssUtil;
 import com.cube.material.entity.Attraction;
+import com.cube.material.entity.Dish;
 import com.cube.material.entity.Goods;
 import com.cube.material.entity.Video;
 import com.cube.material.mapper.AttractionMapper;
+import com.cube.material.mapper.DishMapper;
 import com.cube.material.mapper.GoodsMapper;
 import com.cube.material.mapper.VideoMapper;
 import com.cube.material.service.VideoService;
@@ -54,6 +56,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Resource
     private GoodsMapper goodsMapper;
+
+    @Resource
+    private DishMapper dishMapper;
 
     @Value("${transcode.temp-dir:/tmp/video_transcode}")
     private String tempDir;
@@ -295,9 +300,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             case "goods":
                 return updateGoodsVideo(contentId, videoUrl, thumbnailUrl);
             case "food":
-                // TODO: 实现美食的视频更新
-                log.warn("暂不支持 {} 类型的视频更新", cardType);
-                return null;
+                return updateDishVideo(contentId, videoUrl, thumbnailUrl);
             default:
                 throw new IllegalArgumentException("不支持的卡片类型：" + cardType);
         }
@@ -385,6 +388,27 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     /**
+     * 更新美食视频
+     */
+    private String updateDishVideo(String dishId, String videoUrl, String thumbnailUrl) {
+        Dish dish = dishMapper.selectById(Integer.parseInt(dishId));
+        if (dish == null) {
+            throw new RuntimeException("美食不存在：dishId=" + dishId);
+        }
+
+        log.info("更新美食视频记录，dishId={}", dishId);
+        dish.setVideoUrl(videoUrl);
+        if (thumbnailUrl != null) {
+            dish.setCoverImageUrl(thumbnailUrl);
+        }
+        dish.setUpdateTime(LocalDateTime.now());
+        dishMapper.updateById(dish);
+
+        log.info("美食视频更新完成，dishId={}, videoUrl={}, coverImageUrl={}", dishId, videoUrl, thumbnailUrl);
+        return dishId;
+    }
+
+    /**
      * 验证视频文件
      */
     private void validateVideoFile(MultipartFile file) {
@@ -443,7 +467,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     private String buildVideoObjectName(String cardType, String contentId, String fileName) {
         String basePath = switch (cardType.toLowerCase()) {
             case "attraction" -> "videos/attractionVideo/video/quickTools/";
-            case "food" -> "videos/foodVideo/video/quickTools/";
+            case "food" -> "videos/m3u8/food/";
             case "goods" -> "videos/m3u8/goods/";
             default -> throw new IllegalArgumentException("不支持的卡片类型：" + cardType);
         };
@@ -469,7 +493,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     private String buildThumbnailObjectName(String cardType, String contentId, String fileName) {
         String basePath = switch (cardType.toLowerCase()) {
             case "attraction" -> "images/attractionVideo/quickTools/";
-            case "food" -> "images/foodVideo/quickTools/";
+            case "food" -> "images/food/coverImage/";
             case "goods" -> "images/goods/images/";
             default -> throw new IllegalArgumentException("不支持的卡片类型：" + cardType);
         };
@@ -519,7 +543,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         String fileNameWithoutExt = originalFileName.substring(0, originalFileName.lastIndexOf('.'));
         String basePath = switch (cardType.toLowerCase()) {
             case "attraction" -> "videos/attractionVideo/video/quickTools/";
-            case "food" -> "videos/foodVideo/video/quickTools/";
+            case "food" -> "videos/m3u8/food/";
             case "goods" -> "videos/m3u8/goods/";
             default -> throw new IllegalArgumentException("不支持的卡片类型：" + cardType);
         };
